@@ -1,0 +1,85 @@
+import java.util.*;
+public class Graph_BFS {
+    static ArrayList<ArrayList<Integer>> graph = new ArrayList<ArrayList<Integer>>();
+    Graph_BFS(int n){
+        for(int i = 0; i < n; i++){
+            graph.add(new ArrayList<>());
+        }
+    }
+
+    public void add_Edge(int u, int v){
+        graph.get(u).add(v);
+        graph.get(v).add(u);
+    }
+
+    public static void main(String []args){
+        int n = 6;
+        Graph_BFS gh = new Graph_BFS(n);
+
+        gh.add_Edge(0, 1);
+        gh.add_Edge(0, 2);
+        gh.add_Edge(1, 3);
+        gh.add_Edge(1, 5);
+        gh.add_Edge(2, 4);
+
+        int source = 0;
+        int destination = 5;
+
+        print_path(n, source, destination);
+    }
+
+    public static void print_path(int n, int source, int destination){
+        int []pred = new int[n];
+        if(!find_BFS(n, source, destination, pred)) return;
+        LinkedList<Integer> res = new LinkedList<Integer>();
+
+        int counter = destination;
+        res.add(counter);
+
+        while(pred[counter] != -1){
+            res.add(pred[counter]);
+            counter = pred[counter];
+        }
+        for (int i = res.size() - 1; i > 0; i--)
+        {
+            System.out.print(res.get(i) + " -> ");
+        }
+        System.out.print(res.get(0));
+
+    }
+
+    public static boolean find_BFS(int n, int source, int destination, int[] pred){
+        boolean []visited = new boolean[n];
+        Arrays.fill(visited, false);
+        for(int i = 0; i < n; i++){
+            pred[i] = -1;
+        }
+
+        visited[source] = true;
+
+        Queue<Integer> path = new LinkedList<Integer>();
+        path.add(source);
+        System.out.println(path.isEmpty());
+        
+        while(path.isEmpty() == false){
+            int u = path.remove();
+            for(int i = 0; i < graph.get(u).size(); i++){
+                if(!visited[graph.get(u).get(i)]){
+                    visited[graph.get(u).get(i)] = true;
+                    path.add(graph.get(u).get(i));
+                    pred[graph.get(u).get(i)] = u;
+                    if(graph.get(u).get(i) == destination) return true;
+                }
+            }
+        }
+        for(int i = 0; i < pred.length; i++){
+            System.out.print(pred[i]+" ");
+        }
+        System.out.println();
+        for(int i = 0; i < visited.length; i++){
+            System.out.print(visited[i]+" ");
+        }
+
+        return false;
+    }
+}
